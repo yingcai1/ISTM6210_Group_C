@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}
+Register Page
+
+{% endblock %}
+
+{% block content %}
+<style>
+    .row {
+        margin-right: 15px;
+        margin-left: 15px;
+    }
+    .register-title{
+    text-align: center;
+    margin-top: 1%;
+    color: black;
+    /* color: #495057; */
+}
+    .register{
+    /* background: -webkit-linear-gradient(left, #af8e31, #00ff37); */
+    /* background: -webkit-linear-gradient(-150deg, #0270ff 10%, rgba(0, 0, 0, 0) 70%), url('https://www.plm.automation.siemens.com/media/global/en/Artificial-Intelligence-AI-Automotive-AT_tcm27-91268.jpg');
+    background: -o-linear-gradient(-150deg, #0270ff 10%, rgba(0, 0, 0, 0) 70%), url('https://www.plm.automation.siemens.com/media/global/en/Artificial-Intelligence-AI-Automotive-AT_tcm27-91268.jpg');
+    background: -moz-linear-gradient(-150deg, #0270ff 10%, rgba(0, 0, 0, 0) 70%), url('https://www.plm.automation.siemens.com/media/global/en/Artificial-Intelligence-AI-Automotive-AT_tcm27-91268.jpg'); */
+    background: linear-gradient(-150deg, #0270ff 10%, rgba(0, 0, 0, 0) 70%), url('https://www.plm.automation.siemens.com/media/global/en/Artificial-Intelligence-AI-Automotive-AT_tcm27-91268.jpg');
+    background-size: cover;
+    margin-top: 3%;
+    padding: 3%;
+    border-top-left-radius: 20% 50%;
+    border-bottom-left-radius: 20% 50%;
+    border-top-right-radius: 20% 50%;
+    border-bottom-right-radius: 20% 50%;
+}
+.register .register-form{
+    padding: 2%;
+    margin-top: 1%;
+}
+.btnRegister{
+    border-radius: 2rem;
+    padding: 1.5%;
+    color: #fff;
+    width: 50%;
+    cursor: pointer;
+}
+
+</style>
+<body class="text-center">
+    
+        <form method="POST" class="form-register" style="color:white" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <br>
+            <img class="mb-3" width="80" height="80" src="https://kevinekline.com/wp-content/uploads/2014/06/EmergencyAlerts_5.png" alt="">
+
+            <div class="container register">
+                <div class="col-md-12">
+                <p style="color: white; text-decoration: solid; text-decoration-line: underline;" class="h3 mb-3 font-weight-normal register-title">
+                    Please Create Your Account
+                </p>
+            </div>
+        <div class="row register-form">
+            <div class="col-md-6">
+                {{ form.username.label() }}
+                {{ form.username(class="form-control",style="background-color:#eee", placeholder="User Name...") }}
+    
+                {{ form.user_firstname.label() }}
+                {{ form.user_firstname(class="form-control",style="background-color:#eee", placeholder="First Name...") }}
+
+                {{ form.user_lastname.label() }}
+                {{ form.user_lastname(class="form-control",style="background-color:#eee", placeholder="Last Name...") }}
+
+            </div>
+            <div class="col-md-6">
+
+                {{ form.phone.label() }}
+                {{ form.phone(class="form-control",style="background-color:#eee", placeholder="Phone Number...") }}
+
+                {{ form.email_address.label() }}
+                {{ form.email_address(class="form-control",style="background-color:#eee", placeholder="Email Address...") }}
+                
+
+                    <label>Upload your image:</label>
+                    <input type="file" style="background-color:#eee", class="form-control" required name="photo" />  
+                    <!-- <div class = 'form-fld-input'><input type = 'file' class = 'file-input' name = 'file_image' id = 'file_image'></div> -->
+                
+                    <!-- <label type="text">Please slect your image</label> -->
+            </div>
+            <div class="col-md-6">
+                {{ form.password.label() }}
+                {{ form.password(class="form-control",style="background-color:#eee", placeholder="Password...") }}
+            </div>
+            <div class="col-md-6">
+                {{ form.confirmed_password.label() }}
+                {{ form.confirmed_password(class="form-control",style="background-color:#eee", placeholder="Confirm Your Password...") }}
+            </div>
+        </div>
+            <br>
+            <div class="col-md-12">
+            {{ form.submit(class="btn btn-lg btn-primary btnRegister") }}
+        </div>
+        </div>
+        </form>
+    
+<br>
+
+</body>
+{% endblock %}

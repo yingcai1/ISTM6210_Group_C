@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}
+Login Page
+{% endblock %}
+
+{% block content %}
+<style>
+    html,body{
+    height: 100%;
+    }
+    
+    .container{
+    height: 70%;
+    align-content: center;
+    }
+    
+    .card{
+    height: 360px;
+    margin: auto;
+    /* margin-bottom: auto; */
+    width: 400px;
+    background-color: rgba(0,0,0,0.5) !important;
+    }
+
+    .card-header h3{
+    color: white;
+    }
+    
+    .input-group-prepend span{
+    width: 50px;
+    background-color: greenyellow;
+    color: black;
+    border:1px !important;
+    }
+    
+    input:focus{
+    outline: 0 0 0 0  !important;
+    box-shadow: 0 0 0 0 !important;
+    }
+    
+    .remember{
+    color: white;
+    }
+    
+    .remember input
+    {
+    width: 22px;
+    height: 22px;
+    margin-left: 15px;
+    margin-right: 10px;
+    }
+    
+    .btn_login{
+    color: black;
+    background-color: greenyellow;
+    width: 25%;
+    }
+    
+    .btn_login:hover{
+    color: black;
+    background-color: yellow;
+    }
+    
+    .sign-up{
+    color: white;
+    }
+    
+    .sign-up a{
+    margin-left: 4px;
+    }
+    a:link {
+  color: blue;
+}
+a:hover {
+  color: greenyellow;
+  text-decoration: none;
+}
+
+a:active {
+  color: red;
+}
+    .login_alert.success {
+  color: green;
+}
+
+.login_alert.danger {
+  color: red;
+}
+    </style>
+<div class="container">
+    <h5 style="text-align: center;">Please login to you account!</h3>
+    <br><br>
+
+    <form method="POST" style="color:white">
+        {{ form.hidden_tag() }}
+        <div class="d-flex justify-content-center h-100">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Sign In</h3>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                      {% for category, message in messages %}
+                         <div class="login_alert {{ category }}"> {{ message }}</div>
+                      {% endfor %}
+                    {% endif %}
+                  {% endwith %}
+                    <!-- <div class="d-flex justify-content-end social_icon">
+                        <span><i class="fab fa-facebook-square"></i></span>
+                        <span><i class="fab fa-google-plus-square"></i></span>
+                        <span><i class="fab fa-twitter-square"></i></span>
+                    </div> -->
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            {{ form.username(class="form-control", placeholder="username...") }}
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            </div>
+                            {{ form.password(class="form-control", placeholder="password...") }}
+                        </div>
+                        <div class="row align-items-center remember">
+                            <input type="checkbox">Remember Me
+                        </div>
+                        <div class="form-group">
+                            {{ form.submit(class="btn float-right btn_login") }}
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-center sign-up">
+                        Don't have an account?<a href="{{ url_for('register_page') }}">Sign Up</a>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a href="#">Forgot your password?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<br>
+{% endblock %}
