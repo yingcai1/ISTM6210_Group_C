@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% block title %}
+Camera Page
+{% endblock %}
+
+{% block content %}
+
+<style>
+      html{
+    color: white;
+  }
+  body {
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+label {
+  color: white;
+}
+select{
+  color: white;
+}
+table.dataTable tbody tr {
+  background-color: #343a40;
+}
+.dataTables_wrapper .dataTables_filter input {
+background-color: white;
+}
+.dataTables_wrapper .dataTables_info {
+  color: white;
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: black;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  color: white !important;
+  border-radius: 5px;
+  margin:2px;
+  border: 1px solid #008bff;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+  background-color: #008bff;
+  border: 1px solid red;
+}
+.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+  border-radius: 5px;
+  margin-right: 5px;
+}
+.btn-group>.btn-group:not(:first-child)>.btn, .btn-group>.btn:not(:first-child) {
+  border-radius: 5px;
+  margin-left: 5px;
+}
+.modal-Background {
+  background-image: url("https://images.all-free-download.com/images/graphicthumb/abstract_background_310618.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-size: 100% 100%;
+}
+#myInput {
+  /* background-image: url('https://cdn0.iconfinder.com/data/icons/very-basic-2-android-l-lollipop-icon-pack/24/search-512.png');
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  background-size: auto; */
+  width: 300px;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 3px double #5a5a5a;
+  margin-bottom: 12px;
+}
+th {
+  cursor: pointer;
+}
+</style>
+ <!-- sesion for alert -->
+<section style="width: 30%; margin: auto;">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category,message in messages %}
+        <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+            <span>{{ message }}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+</section>
+
+<br>
+<section>
+    <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Add Camera</button>
+    </div>
+    <form method="POST" action="{{url_for('camera')}}">
+        <div style="color: black;" class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content modal-Background">
+                  <div class="modal-header">
+                    <h4 style="color: red;" class="modal-title" id="myModalLabel">Add New Camera</h4>
+                      <button type="button" class="close" onClick="window.location.reload();" data-dismiss="modal" aria-hidden="true">&times;</button> 
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                        <label style="color: white; font-weight: bold;">Camera Location:</label>
+                        <input class="form-control" name="Location"></input>
+                    </div>
+                    <div class="form-group"></div>
+                        <label style="color: white; font-weight: bold;">Monitored By:</label>
+                        <input class="form-control" name="MonitoredBy"></input>
+                    </div>
+                        <div class="form-group d-flex justify-content-center">
+                            <input style="text-transform: uppercase;" name="btnAdd" type="submit" class="btn btn-md btn-success" value="Add">
+                        </div>
+                    </div>
+
+              </div>
+          </div>
+        </div>
+        </form>
+</section>
+
+<br>
+
+<section style="text-align: center; color: white;">
+
+<div class="table-responsive" style="text-align: center; color: white; width: 90%; margin: auto;">
+    <input style="float: left;" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search..." title="Type..">
+
+    <!-- <table id="myTable" class="datatable table table-hover table-dark table-striped table-bordered"> -->
+        <table id="myTable" class="table table-hover table-dark table-striped table-bordered">
+
+        <thead style="color: rgba(51, 255, 0, 0.8);">
+            <tr>
+                <!-- Columns -->
+                <th onclick="sortTable(0)" scope="col">Camera ID</th>
+                <th onclick="sortTable(1)" scope="col"><i class="fas fa-map-marker-alt" style="color:red; margin-right: 5px;"></i>Location</th>
+                <th onclick="sortTable(2)" scope="col"><i class="fa fa fa-user" style="margin-right: 5px;"></i>Monitored By</th>
+                <th onclick="sortTable(3)" scope="col"><i class="fas fa-exclamation-circle" style="color:red; margin-right: 5px;"></i>Status</th>
+                <th scope="col"><i class="fa fa-tasks" aria-hidden="true" style="margin-right: 5px;"></i>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for camera in cameras %}
+            <form method="POST" class="form-register" style="color:white" enctype="multipart/form-data">
+                <tr>
+                    <td>{{ camera.ID }}</td>
+                    <td>{{ camera.Location }}</td>
+                    <td>{{ camera.MonitoredBy }}</td>
+                    <td style="width: 100px !important;">
+                        {% if camera.Status=="ON" %}
+                        <p hidden>{{ camera.Status }}</p>
+                        <input type="submit" id={{camera.ID}} name="Switch" class="btn btn-primary btn-block" value="{{camera.Status}}">
+                        {% else %}
+                        <p hidden>{{ camera.Status }}</p>
+                        <input type="submit" id={{camera.ID}} name="Switch" class="btn btn-secondary btn-block" value="{{camera.Status}}">
+                        {% endif %}
+                    </td>
+                    <td style="margin: auto;">
+                        <input type="hidden" name="ID" value="{{camera.ID}}">
+                        <a href="/camera/{{camera.ID}}" class="btn btn-success" data-toggle="modal" data-target="#myModal{{camera.ID}}">
+                          <i class="fas fa-edit"></i>
+                        </a>
+                        <input type="submit" id={{camera.ID}} name="btnDelete" style="text-transform: uppercase;" class="btn btn-danger" value="Remove" 
+                        onclick="return confirm('Are You Sure To Remove?')">
+                    </td>
+                </tr>
+                <div id="myModal{{camera.ID}}" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                      <div class="modal-content modal-Background">
+                          <div class="modal-header">
+                            <h4 style="color: red;" class="modal-title" id="myModalLabel">Update Camera No.{{camera.ID}}</h4>
+                              <button type="button" class="close" onClick="window.location.reload();" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          </div>
+                          <div class="modal-body">
+                            <form action="{{url_for('camera')}}" method="POST">
+                              <div class="form-group">
+                               <input type="hidden" name="ID" value="{{camera.ID}}">    
+                              </div>
+                                <div class="form-group">
+                                  <label style="font-weight: bold;">Location:</label>
+                                  <textarea rows="3" cols="30" class="form-control" name="Location" value="{{camera.Location}}">{{camera.Location}}</textarea>
+                                  </div>
+                              <div class="form-group">
+                               <input type="submit" id={{camera.ID}} name="btnEdit" class="btn btn-lg btn-success" value="Edit" 
+                                style="text-transform: uppercase; margin-top: 15px;" onclick="return confirm('Are You Sure To Make Changes?')">
+                              </div>
+                             </form>
+                          </div>
+                          <!-- <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          </div> -->
+                      </div>
+                  </div>
+              </div>
+            </form>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
+</section>
+<br>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // search function
+    function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 1; i < tr.length; i++) {
+            td = tr[i];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+                } else {
+                tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    </script>
+<script>
+    // sort function
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("myTable");
+        switching = true;
+        dir = "asc"; 
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("td")[n];
+                y = rows[i + 1].getElementsByTagName("td")[n];
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch= true;
+                    break;
+                    }
+                } 
+                else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount ++;      
+            } 
+            else {
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
+    <!-- <script>
+        var dataTable = $('.datatable').DataTable({
+          "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+          pagingType: 'full_numbers',
+          responsive: true,
+          columns: [
+            {orderable: true, searchable: true},
+            {orderable: true, searchable: true},
+            {orderable: true, searchable: true},
+            {orderable: true, searchable: true},
+            {orderable: false, searchable: false}],
+    
+          order: [[0,'asc']],
+          
+          language: {
+            "search": '<i class="fa fa-search"></i>',
+            "searchPlaceholder": "Search...",
+            paginate: {next: '<span class="pagination-default">Next </span><i class="fa fa-chevron-right">',
+            previous: '<i class="fa fa-chevron-left"><span class="pagination-default"> Previous</span>'}
+          },
+          
+    
+          dom: "<'row'<'col-md-6'l><'col-md-6'f>>" +
+                "<'row'<'col-md-12'tr>>" +
+                "<'row'<'col-md-5'i><'col-md-7'p>>",
+    drawCallback: function(settings) {
+      if (!$('.datatable').parent().hasClass('table-responsive')) {
+        $('.datatable').wrap("<div class='table-responsive'></div>");
+      }
+    }
+    });
+    </script> -->
+{% endblock %}
