@@ -9,6 +9,9 @@ Landing page (Login required!) <br />
 Register page <br />
 ![IAS-Registerpage](https://user-images.githubusercontent.com/93503167/139753477-c21e9f1e-78b1-4226-9aac-17573e1fd08c.png) <br />
 
+Camera page <br />
+![camera](https://user-images.githubusercontent.com/93503167/142809305-01a3628d-18c3-4906-8254-d4d919cb994b.png)
+
 
 
 
