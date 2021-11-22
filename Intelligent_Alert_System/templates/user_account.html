@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+{% block title %}
+User Account Page
+{% endblock %}
+
+{% block content %}
+<style>
+  .modal-Background {
+  background-image: url("https://images.all-free-download.com/images/graphicthumb/abstract_background_310618.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-size: 100% 100%;
+
+  /* background-size: contain; */
+}
+.table-responsive {
+    width: 90%;
+    margin: auto;
+}
+    .card {
+      background-image: url("https://images.all-free-download.com/images/graphicthumb/abstract_background_310618.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-size: 100% 100%;
+        border:5px solid rgba(0,0,0,.125);
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        width: 30%;
+        border-radius: 0.5rem;
+        margin: 0 auto 50px;
+        text-align: center;
+    }
+    
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+    
+    .container {
+      padding: 2px 16px;
+    }
+    .containerStyle{
+        color: black;
+    }
+
+    .file-upload {
+  /* width: 600px; */
+  margin: 0 auto;
+  /* padding: 20px; */
+}
+
+.file-upload-btn {
+    text-transform: uppercase;
+    font-weight: 500;
+    width: 100%;
+    margin: 0;
+    color: #fff;
+    background: #007bff;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    border-bottom: 2px solid #007bff;
+    transition: all .2s ease;
+    outline: none;
+}
+
+.file-upload-btn:hover {
+  background: #0c5eb6;
+  color: #ffffff;
+  transition: all .2s ease;
+  cursor: pointer;
+}
+
+.file-upload-btn:active {
+  border: 0;
+  transition: all .2s ease;
+}
+
+.file-upload-content {
+  display: none;
+  text-align: center;
+}
+
+.file-upload-input {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+
+.image-title-wrap {
+  padding: 0 15px 0 15px;
+  color: #222;
+}
+
+.file-upload-image {
+  max-height: 200px;
+  max-width: 200px;
+  margin: auto;
+  padding: 20px;
+}
+
+.remove-image {
+  width: 200px;
+  margin: 0;
+  color: #fff;
+  background: #cd4535;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  border-bottom: 4px solid #b02818;
+  transition: all .2s ease;
+  outline: none;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.remove-image:hover {
+  background: #c13b2a;
+  color: #ffffff;
+  transition: all .2s ease;
+  cursor: pointer;
+}
+
+.remove-image:active {
+  border: 0;
+  transition: all .2s ease;
+}
+</style>
+
+<section style="width: 30%; margin: auto;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+          {% for category,message in messages %}
+          <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+              <span>{{ message }}</span>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+  {% endwith %}
+</section>
+
+<br>
+    {% for user_info in account %}
+    <form method="POST" class="form-register" style="color:white" enctype="multipart/form-data">
+    <div class="card">
+        <img style="border-radius: 0.5rem; width: 95%; margin: auto; padding-top: 10px;" src="data:image/jpeg;base64,{{user_info.UserImage}}" alt="Avatar">
+        <div class="container containerStyle">
+            <h4><b>{{ user_info.FirstName }} {{ user_info.LastName }}</b></h4> 
+            <hr>
+            <div class="file-upload">
+                <button id="uploadChange" class="file-upload-btn btn-primary" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Update Image</button>
+              
+                <div class="image-upload-wrap" id="mage-upload-wrap" style="display: none;">
+                  <input id="file-upload-input" style="display: none;" class="file-upload-input" name="photo" type='file' onchange="readURL(this);" accept="image/*" />
+                </div>
+                <div class="file-upload-content">
+                  <img class="file-upload-image" src="#" alt="your image" />
+                  <div class="image-title-wrap">
+                    <button type="button" onclick="removeUpload()" class="btn btn-danger">Remove <span class="image-title">Uploaded Image</span></button>
+                  </div>
+                </div>
+              </div>
+            <br>
+            <div class="btn-wrap">
+            <input style="display:none; text-transform: uppercase; font-weight: 500;" id="change" name="btnEditUser" type="submit" class="btn btn-lg btn-block btn-primary" value="Submit">
+            </div>
+        </div>
+    </div>
+</form>
+    <div class="table-responsive" style="text-align: center;">
+        <table id="myTable" class="table table-hover table-dark table-striped table-bordered">
+            <thead style="color: rgba(51, 255, 0, 0.8);">
+                <tr>
+                    <!-- Your Columns HERE -->
+                    <th scope="col"><i class="far fa-user" aria-hidden="true" style="margin-right: 5px;"></i>User Name</th>
+                    <th scope="col"><i class="fa fa-user" aria-hidden="true" style="margin-right: 5px;"></i>First Name</th>
+                    <th scope="col"><i class="fa fa-user" aria-hidden="true" style="margin-right: 5px;"></i>Last Name</th>
+                    <th scope="col"><i class="fa fa-phone" style="margin-right: 5px;" aria-hidden="true"></i>Phone</th>
+                    <th scope="col"><i class="fa fa-envelope" aria-hidden="true" style="margin-right: 5px;"></i>Email</th>
+                    <!-- <th scope="col">Image</th> -->
+                    <th><i class="fa fa-tasks" aria-hidden="true" style="margin-right: 5px;"></i>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <td>{{ user_info.UserName }}</td>
+                        <td>{{ user_info.FirstName }}</td>
+                        <td>{{ user_info.LastName }}</td>
+                        <td>{{ user_info.Phone }}</td>
+                        <td>{{ user_info.Email }}</td>
+                        <!-- <td><img width="500" height="500" class="img-fluid img-thumbnail" src="data:image/jpeg;base64,{{user_info.UserImage}}" alt="user photo"></td> -->
+                        <td>
+                          <a href="/user_account_page/{{user_info.UserID}}" class="btn btn-success" data-toggle="modal" data-target="#myModal{{user_info.UserID}}"><i class="fas fa-edit"></i></a>
+
+                            <!-- <button class="btn btn-outline btn-info">Delete</button>
+                            <button class="btn btn-outline btn-success">View</button> -->
+                        </td>
+                    </tr>
+                    <div id="myModal{{user_info.UserID}}" class="modal fade" role="dialog">
+                      <div class="modal-dialog">
+                          <div class="modal-content modal-Background">
+                              <div class="modal-header">
+                                <h4 style="color: red;" class="modal-title" id="myModalLabel">Update User: {{ user_info.FirstName }} {{ user_info.LastName }}</h4>
+                                  <button type="button" class="close" onClick="window.location.reload();" data-dismiss="modal" aria-hidden="true">&times;</button>
+                              </div>
+                              <div class="modal-body">
+                                <form action="{{url_for('account')}}" method="POST">
+                                  <div class="form-group">
+                                   <input type="hidden" name="UserID" value="{{user_info.UserID}}">
+                                   <!-- <input type="text" class="form-control" name="name" value="{{user_info.ID}}"> -->
+                                   <img width="200" height="200" class="img-fluid img-thumbnail" src="data:image/jpeg;base64,{{user_info.UserImage}}" alt="User image">
+        
+                                  </div>
+                                  <div class="form-group">
+                                   <label style="color: black; font-weight: bold;">Phone:</label>
+                                   <input class="form-control" name="Phone" value="{{user_info.Phone}}"></input>
+                                  </div>
+                                  <div class="form-group">
+                                    <label style="color: black; font-weight: bold;">Email:</label>
+                                    <input class="form-control" name="Email" value="{{user_info.Email}}"></input>
+                                   </div>
+                                  <div class="form-group">
+                                   <input type="submit" id={{user_info.UserID}} name="btnEditUser" class="btn btn-lg btn-success" value="Edit" 
+                                   style="text-transform: uppercase; margin-top: 15px;" onclick="return confirm('Are You Sure To Make Changes?')">
+                                   <!-- <button class="btn btn-primary" type="submit">Update</button> -->
+                                  </div>
+                                 </form>
+                              </div>
+                              <!-- <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              </div> -->
+                          </div>
+                      </div>
+                  </div>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>function readURL(input) {
+  if (input.files && input.files[0]) {
+
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      $('.image-upload-wrap').hide();
+      $('.btn-wrap').show();
+      $('.file-upload-image').attr('src', e.target.result);
+      $('.file-upload-content').show();
+      document.getElementById("change").style.display = "block";
+      document.getElementById("uploadChange").style.display = "none";
+      $('.image-title').html(input.files[0].name);
+    };
+
+    reader.readAsDataURL(input.files[0]);
+
+  } else {
+    removeUpload();
+  }
+}
+
+function removeUpload() {
+  $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+  $('.file-upload-content').hide();
+  $('.image-upload-wrap').hide();
+
+  document.getElementById("change").style.display = "none";
+  document.getElementById("uploadChange").style.display = "block";
+}
+// $('.image-upload-wrap').bind('dragover', function () {
+// 		$('.image-upload-wrap').addClass('image-dropping');
+// 	});
+// 	$('.image-upload-wrap').bind('dragleave', function () {
+// 		$('.image-upload-wrap').removeClass('image-dropping');
+// });
+function do_change(){
+
+}
+</script>
+    {% endfor %}
+{% endblock %}

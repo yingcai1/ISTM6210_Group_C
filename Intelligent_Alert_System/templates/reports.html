@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+{% block title %}
+Reports Page
+
+{% endblock %}
+
+{% block content %}
+<style>
+  html{
+    color: white;
+  }
+  body {
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+label {
+  color: white;
+}
+select{
+  color: white;
+}
+table.dataTable tbody tr {
+  background-color: #343a40;
+}
+.dataTables_wrapper .dataTables_filter input {
+background-color: white;
+}
+.dataTables_wrapper .dataTables_info {
+  color: white;
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: black;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  color: white !important;
+  border-radius: 5px;
+  margin:2px;
+  border: 1px solid #008bff;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+  background-color: #008bff;
+  border: 1px solid red;
+}
+.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+  border-radius: 5px;
+  margin-right: 5px;
+}
+.btn-group>.btn-group:not(:first-child)>.btn, .btn-group>.btn:not(:first-child) {
+  border-radius: 5px;
+  margin-left: 5px;
+}
+.modal-Background {
+  background-image: url("https://images.all-free-download.com/images/graphicthumb/abstract_background_310618.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-size: 100% 100%;
+
+  /* background-size: contain; */
+
+}
+
+/* table.display tbody .odd:hover {
+    background-color: red !important;
+}
+table.display tbody .even:hover {
+    background-color: blue !important;
+} */
+/* a#myTable_previous{
+  color: white !important;
+}
+a#myTable_next{
+  color: white !important;
+} */
+
+/* a span {
+  color: white;
+  border-radius: 5px 5px 5px;
+  border: 1px solid red;
+  padding: 5px;
+} */
+
+    #myInput {
+  /* background-image: url('https://cdn0.iconfinder.com/data/icons/very-basic-2-android-l-lollipop-icon-pack/24/search-512.png');
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  background-size: auto; */
+  width: 20%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  text-align: center;
+}
+#img {
+transition: transform .08s;
+}
+#img:hover {
+    -ms-transform: scale(2);
+    -webkit-transform: scale(2);
+    transform: scale(2); 
+  }
+  .scrollToTopBtn {
+  background-color: #0270ff;
+  color: #0270ff;
+  transform: translateY(100px);
+  position: fixed;
+  font-size: 18px;
+  line-height: 50px;
+  width: 50px;
+  bottom: 50px;
+  right: 30px;
+  border-radius: 50%;
+  border: none;
+  opacity: 0;
+  transition: all 0.5s ease;
+  z-index: 50;
+}
+.showBtn {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+ <!-- sesion for alert -->
+ <section style="width: 30%; margin: auto;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+          {% for category,message in messages %}
+          <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+              <span>{{ message }}</span>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+  {% endwith %}
+  </section>
+<br>
+    <!-- <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for cases" title="Type in a name"> -->
+    <!-- <form method="POST"> -->
+    <div class="table-responsive" style="text-align: center; color: white; width: 90%; margin: auto;">
+        <table id="myTable" class="datatable table table-hover table-dark table-striped table-bordered">
+            <thead style="color: rgba(51, 255, 0, 0.8);">
+                <tr>
+                    <!-- Columns -->
+                    <th scope="col">Case ID</th>
+                    <th scope="col"><i class="fas fa-clock" style="margin-right: 5px;"></i>Time</th>
+                    <th scope="col"><i class="fas fa-map-marker-alt" style="color:red; margin-right: 5px;"></i>Location</th>
+                    <th scope="col"><i class="fas fa-image" style="margin-right: 5px;"></i>Case Image</th>
+                    <th scope="col">Victim ID</th>
+                    <th scope="col"><i class="fas fa-comment" style="margin-right: 5px;"></i>Comments</th>
+                    <th scope="col"><i class="fas fa-exclamation-circle" style="color:red; margin-right: 5px;"></i>Status</th>
+                    <th><i class="fa fa-tasks" aria-hidden="true" style="margin-right: 5px;"></i>Action</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for case in cases %}
+                    <tr>
+                        <td>{{case.ID}}</td>
+                        <td>{{ case.Time }}</td>
+                        <td>{{ case.Location }}</td>
+                        <td><img id="img" width="400px" height="400px" class="img-fluid img-thumbnail" src="data:image/jpeg;base64,{{case.Image}}" alt="b"></td>
+                        <!-- <td><input type="text" name="comments" value="{{case.Comments}}"></td> -->
+                        <td>{{ case.VictimID }}</td>
+                        <td style="width: 25%;">{{case.Comments}}</td>
+                        <input type="text" style="display: none;" name="ID" value="{{case.ID}}">
+
+                        <!-- <td>{{ case.Comments}} <input type="text" name="comments" size="15" /> -->
+                        </td>
+                        {% if case.Status=="Detected" %}
+                          <td style="color: red;">{{ case.Status}}</td>
+                        {% elif case.Status=="In progress" %}
+                          <td style="color: rgb(7, 248, 7);">{{ case.Status}}</td>
+                          {% elif case.Status=="Done" %}
+                          <td style="color: rgb(0, 195, 255);">{{ case.Status}}</td>
+                        {% else %}
+                          <td style="color: rgb(206, 175, 0);">{{ case.Status}}</td>
+                        {% endif %}
+                        <td>
+                          <a href="/reports/{{case.ID}}" class="btn btn-success" data-toggle="modal" data-target="#myModal{{case.ID}}"><i class="fas fa-edit"></i></a>
+                          
+                          <!-- <input style="text-transform: uppercase;" id={{case.ID}} name="btnEdit" type="submit" class="btn btn-outline btn-info" value="Edit"> -->
+                            <!-- <button class="btn btn-outline btn-info">Edit</button> -->
+                            <!-- <button class="btn btn-outline btn-success">View</button> -->
+                        </td>
+                    </tr>
+                    <!-- update information model -->
+            <div id="myModal{{case.ID}}" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content modal-Background">
+                      <div class="modal-header">
+                        <h4 style="color: red;" class="modal-title" id="myModalLabel">Update Case No.{{case.ID}}</h4>
+                          <button type="button" class="close" onClick="window.location.reload();" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      </div>
+                      <div class="modal-body">
+                        <form action="{{url_for('reports')}}" method="POST">
+                          <div class="form-group">
+                           <input type="hidden" name="ID" value="{{case.ID}}">
+                           <!-- <input type="text" class="form-control" name="name" value="{{case.ID}}"> -->
+                           <img id="img" width="400px" height="400px" class="img-fluid img-thumbnail" src="data:image/jpeg;base64,{{case.Image}}" alt="Case image">
+
+                          </div>
+                          <div class="form-group">
+                           <label style="color: black; font-weight: bold;">Comment:</label>
+                           <textarea rows="5" cols="30" class="form-control" name="Comments" value="{{case.Comments}}">{{case.Comments}}</textarea>
+                           </div>
+                          <div class="form-group">
+                            <input type="submit" id={{case.ID}} name="btnDelete" class="btn btn-danger" value="Delete" 
+                            style="text-transform: uppercase; margin-top: 15px;" onclick="return confirm('Are You Sure To Delete?')">
+                           <input type="submit" id={{case.ID}} name="btnEdit" class="btn btn-success" value="Edit" 
+                           style="text-transform: uppercase; margin-top: 15px;" onclick="return confirm('Are You Sure To Make Changes?')">
+                           <!-- <button class="btn btn-primary" type="submit">Update</button> -->
+                          </div>
+                         </form>
+                      </div>
+                      <!-- <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div> -->
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <button class="scrollToTopBtn">☝️</button>
+
+  {% endblock %}
+  {% block scripts %}
+  <script>
+      var dataTable = $('.datatable').DataTable({
+        "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+        pagingType: 'full_numbers',
+        responsive: true,
+        columns: [
+          {orderable: true, searchable: true},
+          {orderable: true, searchable: true},
+          {orderable: true, searchable: true},
+          {orderable: false, searchable: false},
+          {orderable: true, searchable: true},
+          {orderable: true, searchable: true},
+          {orderable: true, searchable: true},
+          {orderable: false, searchable: false}],
+
+        order: [[6,'asc']],
+        
+        language: {
+          "search": '<i class="fa fa-search"></i>',
+          "searchPlaceholder": "Search...",
+          paginate: {next: '<span class="pagination-default">Next </span><i class="fa fa-chevron-right">',
+          previous: '<i class="fa fa-chevron-left"><span class="pagination-default"> Previous</span>'}
+        },
+        
+        buttons: [
+          {
+            extend: 'excel',
+            title: 'Case Report',
+            filename: 'Cases Report',
+            text: '<i class="fa fa-download"></i> Excel',
+            className: 'btn-md btn-success',
+            search: true,
+            exportOptions: {
+                        columns: [ 0, 1, 2, 4, 5, 6]
+                    },
+          },
+
+          {
+            extend: 'pdf',
+            title: 'Case Report',
+            filename: 'Case Report',
+            className: 'btn-success',
+            text:'<i class="fa fa-download"></i> PDF',
+            search: true,
+            exportOptions: {
+                        columns: [ 0, 1, 2, 4, 5, 6 ]
+                    },
+          },
+          
+        ],
+        dom: "<'row'<'col-md-3'l><'col-md-6 text-center'B><'col-md-3'f>>" +
+              "<'row'<'col-md-12'tr>>" +
+              "<'row'<'col-md-5'i><'col-md-7'p>>",
+  drawCallback: function(settings) {
+    if (!$('.datatable').parent().hasClass('table-responsive')) {
+      $('.datatable').wrap("<div class='table-responsive'></div>");
+    }
+  }
+});
+</script>
+  <script>
+var scrollToTopBtn = document.querySelector(".scrollToTopBtn");
+var rootElement = document.documentElement;
+function handleScroll() {
+  var scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
+  if (rootElement.scrollTop / scrollTotal > 0.7) {
+    scrollToTopBtn.classList.add("showBtn");
+  } else {
+    scrollToTopBtn.classList.remove("showBtn");
+  }
+}
+
+function scrollToTop() {
+  rootElement.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+scrollToTopBtn.addEventListener("click", scrollToTop);
+document.addEventListener("scroll", handleScroll);
+</script>
+{% endblock %}
+    <!-- <script>
+        function myFunction() {
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("myInput");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("myTable");
+          tr = table.getElementsByTagName("tr");
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }       
+          }
+        }
+        </script> -->
